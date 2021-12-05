@@ -27,8 +27,8 @@ contract Zendex {
     // User structure
     struct User{
         address userAddress;
-        uint256[currencies.length] balances; 
-        uint256[currencies.length] staticPercentages;
+        uint[] balances; 
+        uint[] indexPercentagesStatic;
     }
 
     // EVENTS
@@ -52,9 +52,9 @@ contract Zendex {
         // Transfer Mock USDT Tokensto this contract for staking
         usdtToken.transferFrom(msg.sender, address(this), _amount);
         // Update staking balance
-        if(!hasStaked[msg.sender] == true) {
-            uint256[currencies.length] memory initBalances;
-            uint256[currencies.length] memory indexPercentagesStatic;
+        if(!isStaking[msg.sender] == true) {
+            uint[] memory initBalances;
+            uint[] memory indexPercentagesStatic;
             users[msg.sender] = User(msg.sender, initBalances, indexPercentagesStatic);
         }
         // Update amount USDT
@@ -103,10 +103,10 @@ contract Zendex {
         uint[] memory indexPercentagesStatic = users[msg.sender].indexPercentagesStatic;
         
         // Get total usdt value of index
-        uint usdtValue = getUsdtBalances();
+        uint totalUsdtValue = getTotalUsdtValue();
         // Mock trade -> get new asset balances
-        for (int i = 0; i<currencies.length; i++) {
-            users[msg.sender].balances[i] = usdtValue * indexPercentagesStatic[i] / priceFeed[timeJump][i];
+        for (uint i = 0; i<currencies.length; i++) {
+            users[msg.sender].balances[i] = totalUsdtValue * indexPercentagesStatic[i] / priceFeed[timeJump][i];
         }
 
         // Log to chain
@@ -114,12 +114,12 @@ contract Zendex {
     }
 
     // Index Setup
-    function setupIndex(uint[] percentages(currencies.length)) public {
+    function setupIndex(uint[] memory percentages) public {
         // Require that sum of percentages equals 100 percent
         require(getSum(percentages) == 100.0);
         // Write to user structure and set indexSetUp flag true
         users[msg.sender].indexPercentagesStatic = percentages;
-        indexSetUp[msg.sender] = True;
+        indexSetUp[msg.sender] = true;
         
     }
     
