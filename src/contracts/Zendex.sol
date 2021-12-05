@@ -20,14 +20,15 @@ contract Zendex {
 
     // Mapping lists
     mapping(address => uint) public stakingBalance;
-    mapping(address => bool) public hasStaked;
+    mapping(address => bool) public indexSetUp;
     mapping(address => bool) public isStaking;
     mapping(address => User) public users;
 
     // User structure
     struct User{
         address userAddress;
-        uint256[3] balances; 
+        uint256[currencies.length] balances; 
+        uint256[currencies.length] staticPercentages;
     }
 
     // EVENTS
@@ -52,16 +53,15 @@ contract Zendex {
         usdtToken.transferFrom(msg.sender, address(this), _amount);
         // Update staking balance
         if(!hasStaked[msg.sender] == true) {
-            uint256[3] memory initBalances;
-            users[msg.sender] = User(msg.sender, initBalances);
+            uint256[currencies.length] memory initBalances;
+            uint256[currencies.length] memory indexPercentagesStatic;
+            users[msg.sender] = User(msg.sender, initBalances, indexPercentagesStatic);
         }
         // Update amount USDT
         users[msg.sender].balances[0] += _amount;
 
         // Update staking status
         isStaking[msg.sender] = true;
-        hasStaked[msg.sender] = true;
-
         // Log to chain
         //emit UsersUpdate(users);
     }
@@ -99,18 +99,28 @@ contract Zendex {
 
     // Rebalancing
     function rebalance() public {
-        uint[] memory balances = getBalances();
-        uint[] memory percentages = getPercentages();
-
-
+        uint[] memory balances = users[msg.sender].balances;
+        uint[] memory indexPercentagesStatic = users[msg.sender].indexPercentagesStatic;
+        
+        // Get total usdt value of index
+        uint usdtValue = getUsdtBalances();
+        // Mock trade -> get new asset balances
+        for (int i = 0; i<currencies.length; i++) {
+            users[msg.sender].balances[i] = usdtValue * indexPercentagesStatic[i] / priceFeed[timeJump][i];
+        }
 
         // Log to chain
         //emit UsersUpdate(users);
+    }
 
-        // Jump to next point in time
-        if (timeJump < priceFeed.length) {
-            timeJump +=1;
-        }
+    // Index Setup
+    function setupIndex(uint[] percentages(currencies.length)) public {
+        // Require that sum of percentages equals 100 percent
+        require(getSum(percentages) == 100.0);
+        // Write to user structure and set indexSetUp flag true
+        users[msg.sender].indexPercentagesStatic = percentages;
+        indexSetUp[msg.sender] = True;
+        
     }
     
     // Get sum of elements of dynamic array
@@ -180,5 +190,4 @@ contract Zendex {
         return percentages;
     }
     
-
 }

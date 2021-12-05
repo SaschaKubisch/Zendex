@@ -23,6 +23,9 @@ class App extends Component {
 
     const networkId = await web3.eth.net.getId()
 
+
+    this.setState({ loading: false })
+
     // Load USDT Token contract & balance
     const usdtTokenData = UsdtToken.networks[networkId]
     if(usdtTokenData) {
@@ -66,8 +69,6 @@ class App extends Component {
     } else {
       window.alert('Zendex contract not deployed to detected network.')
     }
-
-    this.setState({ loading: false })
   }
 
   // Connect Metamask
@@ -112,7 +113,7 @@ class App extends Component {
       btcTokenBalance: '0',
       ethTokenBalance: '0',
       stakedValue: '0',
-      loading: true
+      loading: false
     }
   }
 
