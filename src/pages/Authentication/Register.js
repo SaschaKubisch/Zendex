@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useState } from "react";
 import PropTypes from "prop-types";
 import { Alert, Card, CardBody, Col, Container, Row, Label } from "reactstrap";
 
@@ -20,10 +20,13 @@ import { Link } from "react-router-dom";
 import profileImg from "../../assets/images/profile-img.png";
 import logoImg from "../../assets/images/zendex_logo_light.svg";
 
+
+
 class Register extends Component {
   constructor(props) {
     super(props);
     this.state = {};
+    var email = {};
   }
 
   componentDidMount() {
@@ -31,18 +34,22 @@ class Register extends Component {
     this.props.registerUserFailed("");
   }
 
-  moralisSignup = (username, email, password) => {
+  moralisSignup = (_username, _email, _password) => {
     const user = new Moralis.User();
-    user.set("username", username);
-    user.set("password", password);
-    user.set("email", email);
-
+    user.set("username", _username);
+    user.set("password", _password);
+    user.set("email", _email);
+    console.log(_email, _username, _password)
     try {
       user.signUp();
-      console.log(username, email, password);
       // Hooray! Let them use the app now.
     } catch (error) {
       // Show the error message somewhere and let the user try again.
+      // <div className="alert-dismissible fade show alert alert-danger alert-dismissible fade show" role="alert">
+      //   <button type="button" className="btn-close" aria-label="Close">
+      //   </button>
+      //   <i className="mdi mdi-block-helper me-2"></i>TEST ERROR WINDOW
+      // </div>
       alert("Error: " + error.code + " " + error.message);
     }
   }
@@ -109,12 +116,42 @@ class Register extends Component {
                         })}
                         onSubmit={values => {
                           this.props.registerUser(values);
-                          console.log(values);
-                          this.moralisSignup(values.username, values.email, values.password);
+                          try {
+                            this.moralisSignup(values.username, values.email, values.password);
+                            document.location.href = '/emailVerification';
+                          } catch (error) {
+                            // Show the error message somewhere and let the user try again.
+                            // <div className="alert-dismissible fade show alert alert-danger alert-dismissible fade show" role="alert">
+                            //   <button type="button" className="btn-close" aria-label="Close">
+                            //   </button>
+                            //   <i className="mdi mdi-block-helper me-2"></i>Test
+                            // </div>
+                            alert("Error: " + error.code + " " + error.message);
+                          }
                         }}
                       >
                         {({ errors, status, touched }) => (
                           <Form className="form-horizontal">
+                            <div className="mb-3">
+                              <Label for="username" className="form-label">
+                                Username
+                              </Label>
+                              <Field
+                                name="username"
+                                type="text"
+                                className={
+                                  "form-control" +
+                                  (errors.username && touched.username
+                                    ? " is-invalid"
+                                    : "")
+                                }
+                              />
+                              <ErrorMessage
+                                name="username"
+                                component="div"
+                                className="invalid-feedback"
+                              />
+                            </div>
                             <div className="mb-3">
                               <Label for="email" className="form-label">
                                 Email
@@ -156,31 +193,12 @@ class Register extends Component {
                                 className="invalid-feedback"
                               />
                             </div>
-                            <div className="mb-3">
-                              <Label for="username" className="form-label">
-                                Username
-                              </Label>
-                              <Field
-                                name="username"
-                                type="text"
-                                className={
-                                  "form-control" +
-                                  (errors.username && touched.username
-                                    ? " is-invalid"
-                                    : "")
-                                }
-                              />
-                              <ErrorMessage
-                                name="username"
-                                component="div"
-                                className="invalid-feedback"
-                              />
-                            </div>
 
                             <div className="mt-4 d-grid">
                               <button
                                 className="btn btn-primary btn-block"
                                 type="submit"
+                                href="/emailVerification"
                               >
                                 Register
                               </button>

@@ -104,19 +104,39 @@ class Header extends Component {
     }
   }
 
- login() {
+  //  login() {
+  //     let user = Moralis.User.current();
+  //     if (!user) {
+  //       user = Moralis.authenticate({ signingMessage: "Log in using Moralis" })
+  //         .then(function (user) {
+  //           console.log("logged in user:", user);
+  //           console.log(user.get("ethAddress"));
+  //         })
+  //         .catch(function (error) {
+  //           console(error);
+  //         });
+  //     }
+  //   }
+
+  login() {
     let user = Moralis.User.current();
-    if (!user) {
-      user = Moralis.authenticate({ signingMessage: "Log in using Moralis" })
-        .then(function (user) {
-          console.log("logged in user:", user);
-          console.log(user.get("ethAddress"));
-        })
-        .catch(function (error) {
-          console(error);
-        });
+    if (user) {
+      Moralis.onAccountsChanged(async (accounts) => {
+        const confirmed = confirm("Link this address to your Zendex account?");
+        if (confirmed) {
+          Moralis.link(accounts[0]);
+        }
+        else {
+          console.log("Cancelled")
+        }
+      });
+    }
+    else {
+      console.log('Back to Login!')
     }
   }
+
+
 
   logout() {
     Moralis.User.logOut();
@@ -173,12 +193,12 @@ class Header extends Component {
                   <i className="bx bx-fullscreen" />
                 </button>
               </div>
-              
-            
-            <div className="d-flex"/>
+
+
+              <div className="d-flex" />
               <button
                 onClick={this.login}>Connect</button>
-            <div className="d-flex"/>
+              <div className="d-flex" />
               <button
                 onClick={this.logout}>Disconnect</button>
 
