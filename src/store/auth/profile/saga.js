@@ -15,6 +15,9 @@ const fireBaseBackend = getFirebaseBackend()
 
 function* editProfile({ payload: { user } }) {
   try {
+    const user = Moralis.User.current();
+    user.set("username", user.username);
+    user.save();
     if (process.env.REACT_APP_DEFAULTAUTH === "firebase") {
       const response = yield call(
         fireBaseBackend.editProfileAPI,

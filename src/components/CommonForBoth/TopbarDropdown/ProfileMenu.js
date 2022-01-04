@@ -17,18 +17,18 @@ import user1 from "../../../assets/images/users/avatar-1.jpg";
 import { connect } from "react-redux";
 
 const getUserName = () => {
-  if (localStorage.getItem("authUser")) {
-    const obj = JSON.parse(localStorage.getItem("authUser"))
-    return obj;
-  }
+   let user = Moralis.User.current();
+   let username = user.username;
+   return username;
 }
 
 class ProfileMenu extends Component {
   constructor(props) {
     super(props)
+    const user =  Moralis.User.current();
     this.state = {
       menu: false,
-      name: "Admin",
+      name: user.username,
     }
     this.toggle = this.toggle.bind(this)
   }

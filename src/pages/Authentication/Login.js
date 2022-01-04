@@ -40,27 +40,6 @@ class Login extends Component {
     this.props.apiError("");
   }
 
-  signIn = (res, type) => {
-    const { socialLogin } = this.props;
-    if (type === "google" && res) {
-      const postData = {
-        name: res.profileObj.name,
-        email: res.profileObj.email,
-        token: res.tokenObj.access_token,
-        idToken: res.tokenId,
-      };
-      socialLogin(postData, this.props.history, type);
-    } else if (type === "facebook" && res) {
-      const postData = {
-        name: res.name,
-        email: res.email,
-        token: res.accessToken,
-        idToken: res.tokenId,
-      };
-      socialLogin(postData, this.props.history, type);
-    }
-  };
-
   //handleGoogleLoginResponse
   googleResponse = response => {
     this.signIn(response, "google");
@@ -135,7 +114,14 @@ class Login extends Component {
                           ),
                         })}
                         onSubmit={values => {
-                          this.props.loginUser(values, this.props.history);
+                          //this.props.loginUser(values, this.props.history);
+                          try {
+                            Moralis.User.logIn(values.email, values.password).then(() => {document.location.href = '/dashboard';});
+                            //console.log(user.email);
+                            //document.location.href = '/dashboard';
+                          } catch(error) {
+                            alert("Error: " + error.code + " " + error.message);
+                          }
                         }}
                       >
                         {({ errors, status, touched }) => (
@@ -207,13 +193,12 @@ class Login extends Component {
                             </div>
 
                             <div className="mt-3 d-grid">
-                              <Link
-                                to={"dashboard"}
+                              <button
                                 className="btn btn-primary btn-block"
                                 type="submit"
                               >
                                 Log In
-                              </Link>
+                              </button>
                             </div>
 
                             <div className="mt-4 text-center">

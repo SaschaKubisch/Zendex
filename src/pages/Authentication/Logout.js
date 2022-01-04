@@ -11,7 +11,10 @@ class Logout extends Component {
    */
   componentDidMount = () => {
     // emit the event
-    this.props.logoutUser(this.props.history)
+    //this.props.logoutUser(this.props.history)
+    Moralis.User.logOut().then(() => {
+      document.location.href = '/login';
+    });
   }
 
   render() {

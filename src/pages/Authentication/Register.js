@@ -1,6 +1,7 @@
 import React, { Component, useState } from "react";
 import PropTypes from "prop-types";
 import { Alert, Card, CardBody, Col, Container, Row, Label } from "reactstrap";
+import { useMoralis, useMoralisCloudFunction } from "react-moralis";
 
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
@@ -34,12 +35,12 @@ class Register extends Component {
     this.props.registerUserFailed("");
   }
 
-  moralisSignup = (_username, _email, _password) => {
+  moralisSignup = (username, email, password) => {
     const user = new Moralis.User();
-    user.set("username", _username);
-    user.set("password", _password);
-    user.set("email", _email);
-    console.log(_email, _username, _password)
+    user.set("username", username);
+    user.set("password", password);
+    user.set("email", email);
+    console.log(email, username, password);
     try {
       user.signUp();
       // Hooray! Let them use the app now.
@@ -52,6 +53,7 @@ class Register extends Component {
       // </div>
       alert("Error: " + error.code + " " + error.message);
     }
+
   }
 
   render() {
@@ -114,21 +116,28 @@ class Register extends Component {
                             "Please Enter Valid Username"
                           ),
                         })}
-                        onSubmit={values => {
-                          this.props.registerUser(values);
-                          try {
-                            this.moralisSignup(values.username, values.email, values.password);
-                            document.location.href = '/emailVerification';
-                          } catch (error) {
-                            // Show the error message somewhere and let the user try again.
-                            // <div className="alert-dismissible fade show alert alert-danger alert-dismissible fade show" role="alert">
-                            //   <button type="button" className="btn-close" aria-label="Close">
-                            //   </button>
-                            //   <i className="mdi mdi-block-helper me-2"></i>Test
-                            // </div>
-                            alert("Error: " + error.code + " " + error.message);
+                        onSubmit={
+                          values => {
+                            const user = new Moralis.User();
+                            user.set("username", values.username);
+                            user.set("password", values.password);
+                            user.set("email", values.email);
+
+                            //this.props.registerUser(values, this.props.history);
+                            try {
+                              user.signUp().then(() => { document.location.href = '/emailVerification'; });
+                            }
+                            catch (error) {
+                              // Show the error message somewhere and let the user try again.
+                              // <div className="alert-dismissible fade show alert alert-danger alert-dismissible fade show" role="alert">
+                              //   <button type="button" className="btn-close" aria-label="Close">
+                              //   </button>
+                              //   <i className="mdi mdi-block-helper me-2"></i>Test
+                              // </div>
+                              alert("Error: " + error.code + " " + error.message);
+                            }
                           }
-                        }}
+                        }
                       >
                         {({ errors, status, touched }) => (
                           <Form className="form-horizontal">
@@ -198,7 +207,6 @@ class Register extends Component {
                               <button
                                 className="btn btn-primary btn-block"
                                 type="submit"
-                                href="/emailVerification"
                               >
                                 Register
                               </button>
@@ -245,6 +253,7 @@ Register.propTypes = {
   registerUserFailed: PropTypes.any,
   registrationError: PropTypes.any,
   user: PropTypes.object,
+  history: PropTypes.object,
 };
 
 const mapStateToProps = state => {

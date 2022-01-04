@@ -40,7 +40,7 @@ class ForgetPasswordPage extends Component {
                       <Col className="col-7">
                         <div className="text-primary p-4">
                           <h5 className="text-primary">Welcome Back !</h5>
-                          <p>Sign in to continue to Skote.</p>
+                          <p>Sign in to continue to Zendex.</p>
                         </div>
                       </Col>
                       <Col className="col-5 align-self-end">
@@ -87,7 +87,15 @@ class ForgetPasswordPage extends Component {
                           ),
                         })}
                         onSubmit={values => {
-                          this.props.userForgetPassword(values, this.props.history);
+                          console.log(values.email);
+                          Moralis.User.requestPasswordReset(values.email)
+                            .then(() => {
+                              // Password reset request was sent successfully
+                              this.props.userForgetPassword(values, this.props.history);
+                            }).catch((error) => {
+                              // Show the error message somewhere
+                              alert("Error: " + error.code + " " + error.message);
+                            });
                         }}
                       >
                         {({ errors, status, touched }) => (

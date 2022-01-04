@@ -19,7 +19,8 @@ import { editProfile, resetProfileFlag } from "../../store/actions";
 class UserProfile extends Component {
   constructor(props) {
     super(props);
-    this.state = { email: "", name: "", idx: 1 };
+    const user = Moralis.User.current();
+    this.state = { email: user.get("email"), name: user.get("username"), idx: "" };
   }
 
   componentDidMount() {
@@ -44,6 +45,7 @@ class UserProfile extends Component {
   componentDidUpdate(prevProps, prevState, ss) {
     if (this.props !== prevProps) {
       const obj = JSON.parse(localStorage.getItem("authUser"));
+
       if (process.env.REACT_APP_DEFAULTAUTH === "firebase") {
         this.setState({
           name: obj.displayName,
@@ -67,9 +69,6 @@ class UserProfile extends Component {
       <React.Fragment>
         <div className="page-content">
           <Container fluid>
-            {/* Render Breadcrumb */}
-            <Breadcrumb title="Skote" breadcrumbItem="Profile" />
-
             <Row>
               <Col lg="12">
                 {this.props.error && this.props.error ? (
@@ -93,7 +92,7 @@ class UserProfile extends Component {
                         <div className="text-muted">
                           <h5>{this.state.name}</h5>
                           <p className="mb-1">{this.state.email}</p>
-                          <p className="mb-0">Id no: #{this.state.idx}</p>
+                          <p className="mb-0">{this.state.username}</p>
                         </div>
                       </div>
                     </div>
@@ -118,6 +117,10 @@ class UserProfile extends Component {
                     ),
                   })}
                   onSubmit={values => {
+                    const user = Moralis.User.current();
+                    user.set("username", values.username);
+                    user.save();
+                    console.log(values.username);
                     this.props.editProfile(values);
                   }}
                 >
