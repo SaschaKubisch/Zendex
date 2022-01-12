@@ -125,6 +125,12 @@ export const deleteOrderFail = error => ({
   payload: error,
 })
 
+
+export const getIndexSetup = () => ({
+  type: GET_INDEX_SETUP,
+})
+
+
 export const getCartData = () => ({
   type: GET_CART_DATA,
 })

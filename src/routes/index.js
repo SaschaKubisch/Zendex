@@ -25,6 +25,9 @@ import Index from "../pages/Index/Index"
 import Tracker from "../pages/Tracker/Tracker"
 import Transactions from "../pages/Transactions/Transactions"
 
+// Details
+import AssetDetails from "../pages/Index/AssetDetails"
+
 const authProtectedRoutes = [
   { path: "/dashboard", component: Dashboard },
   { path: "/wallet", component: Wallet },
@@ -47,6 +50,8 @@ const publicRoutes = [
   { path: "/register", component: Register },
   { path: "/landing", component: Landing },
   { path: "/emailVerification", component: EmailVerification },
+  { path: "/assetDetails", component: AssetDetails },
+  
 
 ]
 

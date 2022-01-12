@@ -9,6 +9,9 @@ import Account from "./auth/register/reducer"
 import ForgetPassword from "./auth/forgetpwd/reducer"
 import Profile from "./auth/profile/reducer"
 
+//Userdata (ZENDEX)
+import userdata from "./userData/reducer"
+
 //E-commerce
 import ecommerce from "./e-commerce/reducer"
 
@@ -44,6 +47,7 @@ import DashboardSaas from "./dashboard-saas/reducer";
 
 const rootReducer = combineReducers({
   // public
+  userdata,
   Layout,
   Login,
   Account,

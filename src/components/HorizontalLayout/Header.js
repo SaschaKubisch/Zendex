@@ -107,89 +107,86 @@ class Header extends Component {
 
   walletConnect() {
     let user = Moralis.User.current();
-    console.log(user.get("email"));
-    Moralis.onAccountsChanged(([account]) => {
-      const confirmed = confirm("Link this address to your account?");
-      if (confirmed) {
-        Moralis.link(account);
-      }});
+    Moralis.authenticate( async (accounts) => {
+        await Moralis.link(accounts[0]);
+    });
   }
 
 
-render() {
-  return (
-    <React.Fragment>
-      <header id="page-topbar">
-        <div className="navbar-header">
-          <div className="d-flex">
-            <div className="navbar-brand-box">
-              <Link to="/" className="logo logo-dark">
-                <span className="logo-sm">
-                  <img src={logo} alt="" height="22" />
-                </span>
-                <span className="logo-lg">
-                  <img src={logoDark} alt="" height="100" />
-                </span>
-              </Link>
+  render() {
+    return (
+      <React.Fragment>
+        <header id="page-topbar">
+          <div className="navbar-header">
+            <div className="d-flex">
+              <div className="navbar-brand-box">
+                <Link to="/" className="logo logo-dark">
+                  <span className="logo-sm">
+                    <img src={logo} alt="" height="22" />
+                  </span>
+                  <span className="logo-lg">
+                    <img src={logoDark} alt="" height="100" />
+                  </span>
+                </Link>
 
-              <Link to="/" className="logo logo-light">
-                <span className="logo-sm">
-                  <img src={logoLightSvg} alt="" height="22" />
-                </span>
-                <span className="logo-lg">
-                  <img src={logoLight} alt="" height="60" />
-                </span>
-              </Link>
-            </div>
+                <Link to="/" className="logo logo-light">
+                  <span className="logo-sm">
+                    <img src={logoLightSvg} alt="" height="22" />
+                  </span>
+                  <span className="logo-lg">
+                    <img src={logoLight} alt="" height="60" />
+                  </span>
+                </Link>
+              </div>
 
-            <button
-              type="button"
-              className="btn btn-sm px-3 font-size-16 d-lg-none header-item"
-              data-toggle="collapse"
-              onClick={this.toggleMenu}
-              data-target="#topnav-menu-content"
-            >
-              <i className="fa fa-fw fa-bars" />
-            </button>
-          </div>
-
-          <div className="d-flex">
-            <div className="dropdown d-none d-lg-inline-block ms-1">
               <button
                 type="button"
-                className="btn header-item noti-icon"
-                onClick={this.toggleFullscreen}
-                data-toggle="fullscreen"
+                className="btn btn-sm px-3 font-size-16 d-lg-none header-item"
+                data-toggle="collapse"
+                onClick={this.toggleMenu}
+                data-target="#topnav-menu-content"
               >
-                <i className="bx bx-fullscreen" />
+                <i className="fa fa-fw fa-bars" />
               </button>
             </div>
 
-            <div className="d-flex" />
-            <button
-              onClick={this.walletConnect}>Connect</button>
-            {/* <div className="d-flex" />
+            <div className="d-flex">
+              <div className="dropdown d-none d-lg-inline-block ms-1">
+                <button
+                  type="button"
+                  className="btn header-item noti-icon"
+                  onClick={this.toggleFullscreen}
+                  data-toggle="fullscreen"
+                >
+                  <i className="bx bx-fullscreen" />
+                </button>
+              </div>
+
+              <div className="d-flex" />
+              <button
+                onClick={this.walletConnect}>Connect</button>
+              {/* <div className="d-flex" />
               <button
                 onClick={console.log("Disconnect Wallet!")}>Disconnect</button> */}
 
-            {/* <Account /> */}
+              {/* <Account /> */}
 
 
-            <ProfileMenu />
+              <ProfileMenu />
 
+            </div>
           </div>
-        </div>
-      </header>
-      <ReactDrawer
-        open={this.state.open}
-        position={this.state.position}
-        onClose={this.onDrawerClose}
-      >
-        <RightSidebar onClose={this.onDrawerClose} />
-      </ReactDrawer>
-    </React.Fragment>
-  )
-}
+        </header>
+        <ReactDrawer
+          open={this.state.open}
+          position={this.state.position}
+          onClose={this.onDrawerClose}
+        >
+          <RightSidebar onClose={this.onDrawerClose} />
+        </ReactDrawer>
+      </React.Fragment>
+    )
+  }
 }
 
 Header.propTypes = {

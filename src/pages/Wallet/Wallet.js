@@ -14,6 +14,7 @@ import WalletActivities from "./walletActivities"
 import WalletStats from "./walletStats"
 import WalletOverView from "./walletOverView"
 
+
 import {
   Container,
   Row,
@@ -106,6 +107,7 @@ class Wallet extends Component {
 
     this.toggleTab = this.toggleTab.bind(this)
     this.toggleMenu = this.toggleMenu.bind(this)
+    this.deposit = this.deposit.bind(this)
   }
 
   componentDidMount() {
@@ -126,6 +128,18 @@ class Wallet extends Component {
       isMenu: !prevState.isMenu,
     }))
   }
+  // HERE RAED
+  deposit() {
+    let options = {
+     contractAddress: "",
+     functionName:"newDeposit",
+     abi: "",
+     params: {note: "Success"},
+     msgValue: Moralis.Units.ETH(10)
+
+    }
+    Moralis.executeFunction(options);
+  }
 
   render() {
     const {
@@ -141,21 +155,11 @@ class Wallet extends Component {
             <title>Your Wallet</title>
           </MetaTags>
           <Container fluid>
-            {/* Render Breadcrumb */}
-            {/* <Breadcrumbs title="Crypto" breadcrumbItem="Wallet" /> */}
             {!isEmpty(wallet) && (
               <Row>
               <Col xl="4">
                 <Card>
                   <CardBody>
-                    {/* <h4 className="card-title mb-4">Stake / Unstake</h4> */}
-
-                    {/* <div>
-                      <p className="text-muted mb-2">
-                        <i className="mdi mdi-wallet me-1"></i> Available Balance
-                      </p>
-                      <h5>$ 9148.23</h5>
-                    </div> */}
 
                     <div className="mt-4">
                       <Nav pills className="bg-light rounded" role="tablist">
@@ -221,12 +225,15 @@ class Wallet extends Component {
                                 <Input type="text" className="form-control" />
                               </InputGroup>
                             </div>
-
+                            
                             <div className="text-center">
                               <Button
+                                id = "btn-deposit"
                                 type="button"
                                 color="success"
                                 className="w-md"
+                                onClick={
+                                  this.deposit()}
                               > 
                                Deposit
                               </Button>
@@ -602,17 +609,6 @@ class Wallet extends Component {
               </Row>
 
             )}
-            {/* <Row>
-              <Col lg="12">
-                {!isEmpty(walletHistory) && (
-                  <WalletActivities
-                    walletHistory={walletHistory}
-                    activeTab={activeTab}
-                    toggleTab={this.toggleTab}
-                  />
-                )}
-              </Col>
-            </Row> */}
           </Container>
         </div>
       </React.Fragment>

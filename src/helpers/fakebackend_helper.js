@@ -149,6 +149,10 @@ export const updateOrder = order => put(url.UPDATE_ORDER, order)
 export const deleteOrder = order =>
   del(url.DELETE_ORDER, { headers: { order } })
 
+// get index setup
+export const getIndexSetup = () => get(url.GET_INDEX_SETUP)
+
+
 // get cart data
 export const getCartData = () => get(url.GET_CART_DATA)
 

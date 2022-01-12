@@ -1,6 +1,9 @@
 import { all, fork } from "redux-saga/effects"
 
 //public
+// ZENDEX
+import userDataSaga from "./userData/saga"
+// OLD
 import AccountSaga from "./auth/register/saga"
 import AuthSaga from "./auth/login/saga"
 import ForgetSaga from "./auth/forgetpwd/saga"
@@ -21,6 +24,7 @@ import dashboardSaasSaga from "./dashboard-saas/saga";
 export default function* rootSaga() {
   yield all([
     //public
+    fork(userDataSaga),    
     fork(AccountSaga),
     fork(AuthSaga),
     fork(ForgetSaga),

@@ -39,6 +39,9 @@ export const ADD_NEW_ORDER = "/add/order"
 export const UPDATE_ORDER = "/update/order"
 export const DELETE_ORDER = "/delete/order"
 
+//INDEX SETUP
+export const GET_INDEX_SETUP = "/index"
+
 //CART DATA
 export const GET_CART_DATA = "/cart"
 
